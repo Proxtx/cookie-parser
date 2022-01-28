@@ -7,7 +7,8 @@ export const cookie = new Proxy(
     set: (target, key, value) => {
       if (value == undefined)
         document.cookie = `${key}: ${value}; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
-      document.cookie = `${key}: ${value}`;
+      else document.cookie = `${key}: ${value}`;
+      return value || true;
     },
   }
 );
