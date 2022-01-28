@@ -5,10 +5,9 @@ export const cookie = new Proxy(
       return parseCookies()[key];
     },
     set: (target, key, value) => {
-      let cookies = parseCookies();
-      cookies[key] = value;
-      buildCookies(cookies);
-      return value || true;
+      if (value == undefined)
+        document.cookie = `${key}: ${value}; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+      document.cookie = `${key}: ${value}`;
     },
   }
 );
@@ -23,16 +22,4 @@ const parseCookies = () => {
   }
 
   return cookies;
-};
-
-const buildCookies = (cookies) => {
-  document.cookie.split(";").forEach((c) => {
-    document.cookie = c
-      .replace(/^ +/, "")
-      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-  });
-  for (let i of Object.keys(cookies)) {
-    if (cookies[i] == undefined) continue;
-    document.cookie = `${i}=${cookies[i]}; `;
-  }
 };
