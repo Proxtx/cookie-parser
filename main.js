@@ -1,3 +1,5 @@
+let addToCookie = "";
+
 export const cookie = new Proxy(
   {},
   {
@@ -5,9 +7,14 @@ export const cookie = new Proxy(
       return parseCookies()[key];
     },
     set: (target, key, value) => {
-      if (value == undefined)
-        document.cookie = `${key}: ${value}; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
-      else document.cookie = `${key}: ${value}`;
+      if (key == "default") {
+        addToCookie = value;
+        return value || true;
+      } else if (value == undefined) {
+        document.cookie = `${key}=delete; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
+        return key || true;
+      }
+      document.cookie = `${key}=${value} ${addToCookie}`;
       return value || true;
     },
   }
